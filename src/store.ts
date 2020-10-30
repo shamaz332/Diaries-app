@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux';
 
 const store = configureStore({
   reducer: rootReducer,
+  
 });
 
 type AppDispatch = typeof store.dispatch;
