@@ -1,17 +1,17 @@
-import React, { FC, useEffect } from "react";
-import { useSelector } from "react-redux";
-import { RootState } from "../../rootReducer";
-import http from "../../services/api";
-import { Diary } from "../../interfaces/diary.interface";
-import { addDiary } from "./diariesSlice";
-import Swal from "sweetalert2";
-import { setUser } from "../auth/userSlice";
-import DiaryTile from "./DiaryTile";
-import { User } from "../../interfaces/user.interface";
-import { Route, Routes } from "react-router-dom";
-import DiaryEntriesList from "./DiaryEntriesList";
-import { useAppDispatch } from "../../store";
-import dayjs from "dayjs";
+import React, { FC, useEffect } from 'react';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../rootReducer';
+import http from '../../services/api';
+import { Diary } from '../../interfaces/diary.interface';
+import { addDiary } from './diariesSlice';
+import Swal from 'sweetalert2';
+import { setUser } from '../auth/userSlice';
+import DiaryTile from './DiaryTile';
+import { User } from '../../interfaces/user.interface';
+import { Route, Switch } from 'react-router-dom';
+import DiaryEntriesList from './DiaryEntriesList';
+import { useAppDispatch } from '../../store';
+import dayjs from 'dayjs';
 
 const Diaries: FC = () => {
   const dispatch = useAppDispatch();
@@ -36,32 +36,32 @@ const Diaries: FC = () => {
   }, [dispatch, user]);
 
   const createDiary = async () => {
-    const result: any = await Swal.mixin({
-      input: "text",
-      confirmButtonText: "Next &rarr;",
+    const result = (await Swal.mixin({
+      input: 'text',
+      confirmButtonText: 'Next &rarr;',
       showCancelButton: true,
-      progressSteps: ["1", "2"],
+      progressSteps: ['1', '2'],
     }).queue([
       {
-        titleText: "Diary title",
-        input: "text",
+        titleText: 'Diary title',
+        input: 'text',
       },
       {
-        titleText: "Private or public diary?",
-        input: "radio",
+        titleText: 'Private or public diary?',
+        input: 'radio',
         inputOptions: {
-          private: "Private",
-          public: "Public",
+          private: 'Private',
+          public: 'Public',
         },
-        inputValue: "private",
+        inputValue: 'private',
       },
-    ]);
+    ])) as any;
     if (result.value) {
       const { value } = result;
       const { diary, user: _user } = await http.post<
         Partial<Diary>,
         { diary: Diary; user: User }
-      >("/diaries/", {
+      >('/diaries/', {
         title: value[0],
         type: value[1],
         userId: user?.id,
@@ -72,32 +72,29 @@ const Diaries: FC = () => {
         dispatch(setUser(_user));
 
         return Swal.fire({
-          titleText: "All done!",
-          confirmButtonText: "OK!",
+          titleText: 'All done!',
+          confirmButtonText: 'OK!',
         });
       }
     }
     Swal.fire({
-      titleText: "Cancelled",
+      titleText: 'Cancelled',
     });
   };
 
   return (
-    <div style={{ padding: "1em 0.4em" }}>
-      <Routes>
-        <Route path="/diary/:id" element={<DiaryEntriesList />} />
-        <Route
-          path="/"
-          element={
-            <>
-              <button onClick={createDiary}>Create New</button>
-              {diaries.map((diary, idx) => (
-                <DiaryTile key={idx} diary={diary} />
-              ))}
-            </>
-          }
-        />
-      </Routes>
+    <div style={{ padding: '1em 0.4em' }}>
+      <Switch>
+        <Route path="/diary/:id">
+          <DiaryEntriesList />
+        </Route>
+        <Route path="/">
+          <button onClick={createDiary}>Create New</button>
+          {diaries.map((diary, idx) => (
+            <DiaryTile key={idx} diary={diary} />
+          ))}
+        </Route>
+      </Switch>
     </div>
   );
 };

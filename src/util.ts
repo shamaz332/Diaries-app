@@ -9,7 +9,7 @@ export const showAlert = (titleText = 'Something happened.', alertType?: SweetAl
     toast: true,
     showConfirmButton: false,
     showCancelButton: true,
-    cancelButtonText: 'Dismiss',
+    cancelButtonText: 'X',
     icon: alertType,
     showClass: {
       popup: 'swal2-noanimation',

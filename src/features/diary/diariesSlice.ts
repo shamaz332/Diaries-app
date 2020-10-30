@@ -22,4 +22,5 @@ const diaries = createSlice({
 });
 
 export const { addDiary, updateDiary } = diaries.actions;
+
 export default diaries.reducer;
